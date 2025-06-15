@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: correio-elegante-server
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: correio-elegante-client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - server
+    restart: unless-stopped
+
+networks:
+  default:
+    name: correio-elegante-network
